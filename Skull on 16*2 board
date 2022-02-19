@@ -1,0 +1,39 @@
+#include <LiquidCrystal_I2C.h>
+
+// Create lcd object of class LiquidCrystal_I2C:
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2); // Change to (0x27,20,4) for 20x4 LCD.
+
+// Make custom characters:
+byte Name[] = {
+  B01110,
+  B10001,
+  B11011,
+  B10001,
+  B01110,
+  B01110,
+  B00000,
+  B00000
+};
+
+void setup() {
+  // Initialize LCD and turn on the backlight:
+  lcd.init();
+  lcd.backlight();
+
+  // Create new characters:
+  lcd.createChar(0, Name);
+  
+  // Clear the LCD screen:
+  lcd.clear();
+
+  // Print a message to the lcd:
+  lcd.print("I made this!!!");
+}
+
+// Print all the custom characters:
+void loop() {
+  lcd.setCursor(6, 1);
+  lcd.write(0);
+
+
+ }
