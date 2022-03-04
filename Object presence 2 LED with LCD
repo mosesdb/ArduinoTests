@@ -4,9 +4,10 @@ LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2);
 // constants won't change
 const int TRIG_PIN = 6; // Arduino pin connected to Ultrasonic Sensor's TRIG pin
 const int ECHO_PIN = 7; // Arduino pin connected to Ultrasonic Sensor's ECHO pin
-const int LED_RED  = 3; // Arduino pin connected to Red LED's pin
-const int LED_GREEN  = 5; // Arduino pin connected to Green LED's pin
 const int DISTANCE_THRESHOLD = 20; // centimeters
+int redPin=11;
+int greenPin=10;
+int bluePin=9;
 
 // variables will change:
 float duration_us, distance_cm;
@@ -15,8 +16,9 @@ void setup() {
   Serial.begin (9600);       // initialize serial port
   pinMode(TRIG_PIN, OUTPUT); // set arduino pin to output mode
   pinMode(ECHO_PIN, INPUT);  // set arduino pin to input mode
-  pinMode(LED_RED, OUTPUT);  // set arduino pin to output mode
-  pinMode(LED_GREEN, OUTPUT);  // set arduino pin to output mode
+  pinMode(redPin,OUTPUT);
+  pinMode(greenPin,OUTPUT);
+  pinMode(bluePin,OUTPUT);
   lcd.init();
   lcd.backlight();
 }
@@ -32,29 +34,25 @@ void loop() {
   // calculate the distance
   distance_cm = 0.017 * duration_us;
 
-  if(distance_cm < DISTANCE_THRESHOLD)
-    digitalWrite(LED_RED, HIGH); // turn on LED
-    else
-    digitalWrite(LED_RED, LOW);  // turn off LED
+  if(distance_cm <= DISTANCE_THRESHOLD)
+    analogWrite(redPin,255);
+   else
+    analogWrite(redPin,0);
 
-  if(distance_cm > DISTANCE_THRESHOLD)
-    digitalWrite(LED_GREEN, HIGH);  // turn on GLED
-  else
-    digitalWrite(LED_GREEN, LOW); // turn off GLED
-
-  if(distance_cm < DISTANCE_THRESHOLD)
-    lcd.setCursor(2, 0);
- 
-  if(distance_cm > DISTANCE_THRESHOLD)
-     lcd.setCursor(2, 0);
-
-  if(distance_cm < DISTANCE_THRESHOLD)
-    lcd.print("OCCUPIED");
-    else
-    lcd.clear();
-
-  if(distance_cm > DISTANCE_THRESHOLD)
+  if(distance_cm >= DISTANCE_THRESHOLD)
+    analogWrite(greenPin,255);
+   else
+    analogWrite(greenPin,0);
     
+  if(distance_cm <= DISTANCE_THRESHOLD)
+    lcd.setCursor(4, 0);
+    lcd.print("CLOSED");
+  
+  if(distance_cm >= DISTANCE_THRESHOLD)
+     lcd.clear();
+     lcd.setCursor(4, 0);
+     lcd.print("OPEN");
+
 
   // print the value to Serial Monitor
   Serial.print("distance: ");
@@ -62,4 +60,3 @@ void loop() {
   Serial.println(" cm");
 
   delay(500);
-}
